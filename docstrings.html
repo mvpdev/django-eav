@@ -1,0 +1,653 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Docstrings &mdash; django-eav v0.9.1 documentation</title>
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.9.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="django-eav v0.9.1 documentation" href="index.html" />
+    <link rel="prev" title="django-eav" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="django-eav"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">django-eav v0.9.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-eav.registry">
+<h1>Docstrings<a class="headerlink" href="#module-eav.registry" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="models">
+<h2>models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the four concrete, non-abstract models:</p>
+<ul class="simple">
+<li><a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a></li>
+<li><a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a></li>
+<li><a title="eav.models.EnumValue" class="reference internal" href="#eav.models.EnumValue"><tt class="xref docutils literal"><span class="pre">EnumValue</span></tt></a></li>
+<li><a title="eav.models.EnumGroup" class="reference internal" href="#eav.models.EnumGroup"><tt class="xref docutils literal"><span class="pre">EnumGroup</span></tt></a></li>
+</ul>
+<p>Along with the <a title="eav.models.Entity" class="reference internal" href="#eav.models.Entity"><tt class="xref docutils literal"><span class="pre">Entity</span></tt></a> helper class.</p>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="eav.models.Attribute">
+<em class="property">class </em><tt class="descclassname">eav.models.</tt><tt class="descname">Attribute</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.Attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Putting the <strong>A</strong> in <em>EAV</em>. This holds the attributes, or concepts.
+Examples of possible <em>Attributes</em>: color, height, weight,
+number of children, number of patients, has fever?, etc...</p>
+<p>Each attribute has a name, and a description, along with a slug that must
+be unique.  If you don&#8217;t provide a slug, a default slug (derrived from
+name), will be created.</p>
+<p>The <em>required</em> field is a boolean that indicates whether this EAV attribute
+is required for entitys to which it applies. It defaults to <em>False</em>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Just like a normal model field that is required, you will not be able
+to save or create any entity object for which this attribute applies,
+without first setting this EAV attribute.</p>
+</div>
+<p>There are 7 possible values for datatype:</p>
+<blockquote>
+<ul class="simple">
+<li>int (TYPE_INT)</li>
+<li>float (TYPE_FLOAT)</li>
+<li>text (TYPE_TEXT)</li>
+<li>date (TYPE_DATE)</li>
+<li>bool (TYPE_BOOLEAN)</li>
+<li>object (TYPE_OBJECT)</li>
+<li>enum (TYPE_ENUM)</li>
+</ul>
+</blockquote>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Height&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_INT</span><span class="p">)</span>
+<span class="go">&lt;Attribute: Height (Float)&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Color&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_TEXT</span><span class="p">)</span>
+<span class="go">&lt;Attribute: Color (Text)&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">yes</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;yes&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">no</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;no&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unkown</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;unkown&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ynu</span> <span class="o">=</span> <span class="n">EnumGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Yes / No / Unkown&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ynu</span><span class="o">.</span><span class="n">enums</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">unkown</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Atrribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Has Fever?&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_ENUM</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">enum_group</span><span class="o">=</span><span class="n">ynu</span><span class="p">)</span>
+<span class="go">&lt;Attribute: Has Fever? (Multiple Choice)&gt;</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Once an Attribute has been used by an entity, you can not
+change it&#8217;s datatype.</p>
+</div>
+<dl class="method">
+<dt id="eav.models.Attribute.clean">
+<tt class="descname">clean</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Attribute.clean" title="Permalink to this definition">¶</a></dt>
+<dd>Validates the attribute.  Will raise <tt class="docutils literal"><span class="pre">ValidationError</span></tt> if
+the attribute&#8217;s datatype is <em>TYPE_ENUM</em> and enum_group is not set,
+or if the attribute is not <em>TYPE_ENUM</em> and the enum group is set.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Attribute.get_choices">
+<tt class="descname">get_choices</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Attribute.get_choices" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a query set of <a title="eav.models.EnumValue" class="reference internal" href="#eav.models.EnumValue"><tt class="xref docutils literal"><span class="pre">EnumValue</span></tt></a> objects for this attribute.
+Returns None if the datatype of this attribute is not <em>TYPE_ENUM</em>.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Attribute.get_validators">
+<tt class="descname">get_validators</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Attribute.get_validators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the appropriate validator function from <tt class="xref docutils literal"><span class="pre">validators</span></tt>
+as a list (of length one) for the datatype.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The reason it returns it as a list, is eventually we may want this
+method to look elsewhere for additional attribute specific
+validators to return as well as the default, built-in one.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Attribute.save">
+<tt class="descname">save</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.Attribute.save" title="Permalink to this definition">¶</a></dt>
+<dd>Saves the Attribute and auto-generates a slug field if one wasn&#8217;t
+provided.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Attribute.save_value">
+<tt class="descname">save_value</tt><big>(</big><em>entity</em>, <em>value</em><big>)</big><a class="headerlink" href="#eav.models.Attribute.save_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called with <em>entity</em>, any django object registered with eav, and
+<em>value</em>, the <a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> this attribute for <em>entity</em> should
+be set to.</p>
+<p>If a <a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> object for this <em>entity</em> and attribute doesn&#8217;t
+exist, one will be created.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>If <em>value</em> is None and a <a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> object exists for this</dt>
+<dd>Attribute and <em>entity</em>, it will delete that <a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> object.</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Attribute.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.models.Attribute.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd>Check <em>value</em> against the validators returned by
+<a title="eav.models.Attribute.get_validators" class="reference internal" href="#eav.models.Attribute.get_validators"><tt class="xref docutils literal"><span class="pre">get_validators()</span></tt></a> for this attribute.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="eav.models.Entity">
+<em class="property">class </em><tt class="descclassname">eav.models.</tt><tt class="descname">Entity</tt><big>(</big><em>instance</em><big>)</big><a class="headerlink" href="#eav.models.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The helper class that will be attached to any entity registered with
+eav.</p>
+<dl class="method">
+<dt id="eav.models.Entity.get_all_attribute_slugs">
+<tt class="descname">get_all_attribute_slugs</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Entity.get_all_attribute_slugs" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a list of slugs for all attributes available to this entity.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Entity.get_all_attributes">
+<tt class="descname">get_all_attributes</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Entity.get_all_attributes" title="Permalink to this definition">¶</a></dt>
+<dd>Return a query set of all <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> objects that can be set
+for this entity.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Entity.get_attribute_by_slug">
+<tt class="descname">get_attribute_by_slug</tt><big>(</big><em>slug</em><big>)</big><a class="headerlink" href="#eav.models.Entity.get_attribute_by_slug" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a single <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> with <em>slug</em></dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Entity.get_value_by_attribute">
+<tt class="descname">get_value_by_attribute</tt><big>(</big><em>attribute</em><big>)</big><a class="headerlink" href="#eav.models.Entity.get_value_by_attribute" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a single <a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> for <em>attribute</em></dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Entity.get_values">
+<tt class="descname">get_values</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Entity.get_values" title="Permalink to this definition">¶</a></dt>
+<dd>Get all set <a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> objects for self.model</dd></dl>
+
+<dl class="staticmethod">
+<dt id="eav.models.Entity.post_save_handler">
+<em class="property">static </em><tt class="descname">post_save_handler</tt><big>(</big><em>sender</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.Entity.post_save_handler" title="Permalink to this definition">¶</a></dt>
+<dd>Post save handler attached to self.model.  Calls <a title="eav.models.Entity.save" class="reference internal" href="#eav.models.Entity.save"><tt class="xref docutils literal"><span class="pre">save()</span></tt></a> when
+the model instance we are attached to is saved.</dd></dl>
+
+<dl class="staticmethod">
+<dt id="eav.models.Entity.pre_save_handler">
+<em class="property">static </em><tt class="descname">pre_save_handler</tt><big>(</big><em>sender</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.Entity.pre_save_handler" title="Permalink to this definition">¶</a></dt>
+<dd>Pre save handler attached to self.model.  Called before the
+model instance we are attached to is saved. This allows us to call
+<a title="eav.models.Entity.validate_attributes" class="reference internal" href="#eav.models.Entity.validate_attributes"><tt class="xref docutils literal"><span class="pre">validate_attributes()</span></tt></a> before the entity is saved.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Entity.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Entity.save" title="Permalink to this definition">¶</a></dt>
+<dd>Saves all the EAV values that have been set on this entity.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Entity.validate_attributes">
+<tt class="descname">validate_attributes</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Entity.validate_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called before <a title="eav.models.Entity.save" class="reference internal" href="#eav.models.Entity.save"><tt class="xref docutils literal"><span class="pre">save()</span></tt></a>, first validate all the entity values to
+make sure they can be created / saved cleanly.</p>
+<p>Raise <tt class="docutils literal"><span class="pre">ValidationError</span></tt> if they can&#8217;t be.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="eav.models.EnumGroup">
+<em class="property">class </em><tt class="descclassname">eav.models.</tt><tt class="descname">EnumGroup</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.EnumGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>EnumGroup</em> objects have two fields- a <em>name</em> <tt class="docutils literal"><span class="pre">CharField</span></tt> and <em>enums</em>,
+a <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> to <a title="eav.models.EnumValue" class="reference internal" href="#eav.models.EnumValue"><tt class="xref docutils literal"><span class="pre">EnumValue</span></tt></a>. <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> classes
+with datatype <em>TYPE_ENUM</em> have a <tt class="docutils literal"><span class="pre">ForeignKey</span></tt> field to <em>EnumGroup</em>.</p>
+<p>See <a title="eav.models.EnumValue" class="reference internal" href="#eav.models.EnumValue"><tt class="xref docutils literal"><span class="pre">EnumValue</span></tt></a> for an example.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="eav.models.EnumValue">
+<em class="property">class </em><tt class="descclassname">eav.models.</tt><tt class="descname">EnumValue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.EnumValue" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>EnumValue</em> objects are the value &#8216;choices&#8217; to multiple choice
+<em>TYPE_ENUM</em> <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> objects.</p>
+<p>They have only one field, <em>value</em>, a``CharField`` that must be unique.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">yes</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;yes&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">no</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;no&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unkown</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#39;unkown&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ynu</span> <span class="o">=</span> <span class="n">EnumGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Yes / No / Unkown&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ynu</span><span class="o">.</span><span class="n">enums</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">unkown</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Atrribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Has Fever?&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_ENUM</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">enum_group</span><span class="o">=</span><span class="n">ynu</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The same <em>EnumValue</em> objects should be reused within multiple
+<em>EnumGroups</em>.  For example, if you have one <em>EnumGroup</em>
+called: <em>Yes / No / Unkown</em> and another called <em>Yes / No /
+Not applicable</em>, you should only have a total of four <em>EnumValues</em>
+objects, as you should have used the same <em>Yes</em> and <em>No</em> <em>EnumValues</em>
+for both <em>EnumGroups</em>.</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="eav.models.Value">
+<em class="property">class </em><tt class="descclassname">eav.models.</tt><tt class="descname">Value</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.Value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Putting the <strong>V</strong> in <em>EAV</em>. This model stores the value for one particular
+<a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> for some entity.</p>
+<p>As with most EAV implementations, most of the columns of this model will
+be blank, as onle one <em>value_</em> field will be used.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">eav</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eav</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&#39;crazy_dev_user&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Favorite Drink&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">slug</span><span class="o">=</span><span class="s">&#39;fav_drink&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Value</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">entity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">value_text</span><span class="o">=</span><span class="s">&#39;red bull&#39;</span><span class="p">)</span>
+<span class="go">&lt;Value: crazy_dev_user - Favorite Drink: &quot;red bull&quot;&gt;</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="eav.models.Value.clean">
+<tt class="descname">clean</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.models.Value.clean" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> if this value&#8217;s attribute is <em>TYPE_ENUM</em>
+and value_enum is not a valid choice for this value&#8217;s attribute.</dd></dl>
+
+<dl class="attribute">
+<dt id="eav.models.Value.entity">
+<tt class="descname">entity</tt><a class="headerlink" href="#eav.models.Value.entity" title="Permalink to this definition">¶</a></dt>
+<dd>Provides a generic relation to any object through content-type/object-id
+fields.</dd></dl>
+
+<dl class="method">
+<dt id="eav.models.Value.save">
+<tt class="descname">save</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.models.Value.save" title="Permalink to this definition">¶</a></dt>
+<dd>Validate and save this value</dd></dl>
+
+<dl class="attribute">
+<dt id="eav.models.Value.value">
+<tt class="descname">value</tt><a class="headerlink" href="#eav.models.Value.value" title="Permalink to this definition">¶</a></dt>
+<dd>Return the python object this value is holding</dd></dl>
+
+<dl class="attribute">
+<dt id="eav.models.Value.value_object">
+<tt class="descname">value_object</tt><a class="headerlink" href="#eav.models.Value.value_object" title="Permalink to this definition">¶</a></dt>
+<dd>Provides a generic relation to any object through content-type/object-id
+fields.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="validators">
+<h2>validators<a class="headerlink" href="#validators" title="Permalink to this headline">¶</a></h2>
+<p>This module contains a validator for each Attribute datatype.</p>
+<p>A validator is a callable that takes a value and raises a <tt class="docutils literal"><span class="pre">ValidationError</span></tt>
+if it doesn’t meet some criteria. (see
+<a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/validators/">django validators</a>)</p>
+<p>These validators are called by the
+<a title="eav.models.Attribute.validate_value" class="reference internal" href="#eav.models.Attribute.validate_value"><tt class="xref docutils literal"><span class="pre">validate_value()</span></tt></a> method in the
+<a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> model.</p>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="eav.validators.validate_bool">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_bool</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_bool" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> type is <tt class="docutils literal"><span class="pre">bool</span></tt></dd></dl>
+
+<dl class="function">
+<dt id="eav.validators.validate_date">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_date</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_date" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> is an instance of <tt class="docutils literal"><span class="pre">datetime</span></tt>
+or <tt class="docutils literal"><span class="pre">date</span></tt></dd></dl>
+
+<dl class="function">
+<dt id="eav.validators.validate_enum">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_enum</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_enum" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> is a saved
+<a title="eav.models.EnumValue" class="reference internal" href="#eav.models.EnumValue"><tt class="xref docutils literal"><span class="pre">EnumValue</span></tt></a> model instance.</dd></dl>
+
+<dl class="function">
+<dt id="eav.validators.validate_float">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_float</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_float" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> can be cast as a <tt class="docutils literal"><span class="pre">float</span></tt></dd></dl>
+
+<dl class="function">
+<dt id="eav.validators.validate_int">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_int</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_int" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> can be cast as an <tt class="docutils literal"><span class="pre">int</span></tt></dd></dl>
+
+<dl class="function">
+<dt id="eav.validators.validate_object">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_object</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_object" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> is a saved
+django model instance.</dd></dl>
+
+<dl class="function">
+<dt id="eav.validators.validate_text">
+<tt class="descclassname">eav.validators.</tt><tt class="descname">validate_text</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#eav.validators.validate_text" title="Permalink to this definition">¶</a></dt>
+<dd>Raises <tt class="docutils literal"><span class="pre">ValidationError</span></tt> unless <em>value</em> type is <tt class="docutils literal"><span class="pre">str</span></tt> or <tt class="docutils literal"><span class="pre">unicode</span></tt></dd></dl>
+
+</div>
+</div>
+<div class="section" id="fields">
+<h2>fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h2>
+<p>Contains two custom fields:</p>
+<ul class="simple">
+<li><a title="eav.fields.EavSlugField" class="reference internal" href="#eav.fields.EavSlugField"><tt class="xref docutils literal"><span class="pre">EavSlugField</span></tt></a></li>
+<li><a title="eav.fields.EavDatatypeField" class="reference internal" href="#eav.fields.EavDatatypeField"><tt class="xref docutils literal"><span class="pre">EavDatatypeField</span></tt></a></li>
+</ul>
+<div class="section" id="id1">
+<h3>Classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="eav.fields.EavDatatypeField">
+<em class="property">class </em><tt class="descclassname">eav.fields.</tt><tt class="descname">EavDatatypeField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.fields.EavDatatypeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>The datatype field used by <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a></p>
+<dl class="method">
+<dt id="eav.fields.EavDatatypeField.validate">
+<tt class="descname">validate</tt><big>(</big><em>value</em>, <em>instance</em><big>)</big><a class="headerlink" href="#eav.fields.EavDatatypeField.validate" title="Permalink to this definition">¶</a></dt>
+<dd>Raise <tt class="docutils literal"><span class="pre">ValidationError</span></tt> if they try to change the datatype of an
+<a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> that is already used by
+<a title="eav.models.Value" class="reference internal" href="#eav.models.Value"><tt class="xref docutils literal"><span class="pre">Value</span></tt></a> objects.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="eav.fields.EavSlugField">
+<em class="property">class </em><tt class="descclassname">eav.fields.</tt><tt class="descname">EavSlugField</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.fields.EavSlugField" title="Permalink to this definition">¶</a></dt>
+<dd><p>The slug field used by <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a></p>
+<dl class="staticmethod">
+<dt id="eav.fields.EavSlugField.create_slug_from_name">
+<em class="property">static </em><tt class="descname">create_slug_from_name</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#eav.fields.EavSlugField.create_slug_from_name" title="Permalink to this definition">¶</a></dt>
+<dd>Creates a slug based on the name</dd></dl>
+
+<dl class="method">
+<dt id="eav.fields.EavSlugField.validate">
+<tt class="descname">validate</tt><big>(</big><em>value</em>, <em>instance</em><big>)</big><a class="headerlink" href="#eav.fields.EavSlugField.validate" title="Permalink to this definition">¶</a></dt>
+<dd>Slugs are used to convert the Python attribute name to a database
+lookup and vice versa. We need it to be a valid Python identifier.
+We don&#8217;t want it to start with a &#8216;_&#8217;, underscore will be used
+var variables we don&#8217;t want to be saved in db.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="forms">
+<h2>forms<a class="headerlink" href="#forms" title="Permalink to this headline">¶</a></h2>
+<p>The forms used for admin integration</p>
+<div class="section" id="id2">
+<h3>Classes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="eav.forms.BaseDynamicEntityForm">
+<em class="property">class </em><tt class="descclassname">eav.forms.</tt><tt class="descname">BaseDynamicEntityForm</tt><big>(</big><em>data=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.forms.BaseDynamicEntityForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>ModelForm for entity with support for EAV attributes. Form fields are
+created on the fly depending on Schema defined for given entity instance.
+If no schema is defined (i.e. the entity instance has not been saved yet),
+only static fields are used. However, on form validation the schema will be
+retrieved and EAV fields dynamically added to the form, so when the
+validation is actually done, all EAV fields are present in it (unless
+Rubric is not defined).</p>
+<dl class="method">
+<dt id="eav.forms.BaseDynamicEntityForm.save">
+<tt class="descname">save</tt><big>(</big><em>commit=True</em><big>)</big><a class="headerlink" href="#eav.forms.BaseDynamicEntityForm.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves this <tt class="docutils literal"><span class="pre">form</span></tt>&#8216;s cleaned_data into model instance
+<tt class="docutils literal"><span class="pre">self.instance</span></tt> and related EAV attributes.</p>
+<p>Returns <tt class="docutils literal"><span class="pre">instance</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="managers">
+<h2>managers<a class="headerlink" href="#managers" title="Permalink to this headline">¶</a></h2>
+<p>Contains the custom manager used by entities registered with eav.</p>
+<div class="section" id="functions-and-classes">
+<h3>Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="eav.managers.EntityManager">
+<em class="property">class </em><tt class="descclassname">eav.managers.</tt><tt class="descname">EntityManager</tt><a class="headerlink" href="#eav.managers.EntityManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Our custom manager, overriding <tt class="docutils literal"><span class="pre">models.Manager</span></tt></p>
+<dl class="method">
+<dt id="eav.managers.EntityManager.create">
+<tt class="descname">create</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.managers.EntityManager.create" title="Permalink to this definition">¶</a></dt>
+<dd>Parse eav attributes out of <em>kwargs</em>, then try to create and save
+the object, then assign and save it&#8217;s eav attributes.</dd></dl>
+
+<dl class="method">
+<dt id="eav.managers.EntityManager.exclude">
+<tt class="descname">exclude</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.managers.EntityManager.exclude" title="Permalink to this definition">¶</a></dt>
+<dd>Pass <em>args</em> and <em>kwargs</em> through <a title="eav.managers.eav_filter" class="reference internal" href="#eav.managers.eav_filter"><tt class="xref docutils literal"><span class="pre">eav_filter()</span></tt></a>, then pass to
+the <tt class="docutils literal"><span class="pre">models.Manager</span></tt> exclude method.</dd></dl>
+
+<dl class="method">
+<dt id="eav.managers.EntityManager.filter">
+<tt class="descname">filter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.managers.EntityManager.filter" title="Permalink to this definition">¶</a></dt>
+<dd>Pass <em>args</em> and <em>kwargs</em> through <a title="eav.managers.eav_filter" class="reference internal" href="#eav.managers.eav_filter"><tt class="xref docutils literal"><span class="pre">eav_filter()</span></tt></a>, then pass to
+the <tt class="docutils literal"><span class="pre">models.Manager</span></tt> filter method.</dd></dl>
+
+<dl class="method">
+<dt id="eav.managers.EntityManager.get">
+<tt class="descname">get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.managers.EntityManager.get" title="Permalink to this definition">¶</a></dt>
+<dd>Pass <em>args</em> and <em>kwargs</em> through <a title="eav.managers.eav_filter" class="reference internal" href="#eav.managers.eav_filter"><tt class="xref docutils literal"><span class="pre">eav_filter()</span></tt></a>, then pass to
+the <tt class="docutils literal"><span class="pre">models.Manager</span></tt> get method.</dd></dl>
+
+<dl class="method">
+<dt id="eav.managers.EntityManager.get_or_create">
+<tt class="descname">get_or_create</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.managers.EntityManager.get_or_create" title="Permalink to this definition">¶</a></dt>
+<dd>Reproduces the behavior of get_or_create, eav friendly.</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="eav.managers.eav_filter">
+<tt class="descclassname">eav.managers.</tt><tt class="descname">eav_filter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#eav.managers.eav_filter" title="Permalink to this definition">¶</a></dt>
+<dd>Decorator used to wrap filter and exlclude methods.  Passes args through
+expand_q_filters and kwargs through expand_eav_filter. Returns the
+called function (filter or exclude)</dd></dl>
+
+<dl class="function">
+<dt id="eav.managers.expand_eav_filter">
+<tt class="descclassname">eav.managers.</tt><tt class="descname">expand_eav_filter</tt><big>(</big><em>model_cls</em>, <em>key</em>, <em>value</em><big>)</big><a class="headerlink" href="#eav.managers.expand_eav_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accepts a model class and a key, value.
+Recurisively replaces any eav filter with a subquery.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">key</span> <span class="o">=</span> <span class="s">&#39;eav__height&#39;</span>
+<span class="n">value</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>Would return:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">key</span> <span class="o">=</span> <span class="s">&#39;eav_values__in&#39;</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">Values</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">value_int</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">attribute__slug</span><span class="o">=</span><span class="s">&#39;height&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="eav.managers.expand_q_filters">
+<tt class="descclassname">eav.managers.</tt><tt class="descname">expand_q_filters</tt><big>(</big><em>q</em>, <em>root_cls</em><big>)</big><a class="headerlink" href="#eav.managers.expand_q_filters" title="Permalink to this definition">¶</a></dt>
+<dd>Takes a Q object and a model class.
+Recursivley passes each filter / value in the Q object tree leaf nodes
+through expand_eav_filter</dd></dl>
+
+</div>
+</div>
+<div class="section" id="registry">
+<h2>registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h2>
+<p>This contains the registry classes</p>
+<div class="section" id="id3">
+<h3>Classes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="eav.registry.EavConfig">
+<em class="property">class </em><tt class="descclassname">eav.registry.</tt><tt class="descname">EavConfig</tt><a class="headerlink" href="#eav.registry.EavConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default EevConfig class used if it is not overriden on registration.
+This is where all the default eav attribute names are defined.</p>
+<dl class="classmethod">
+<dt id="eav.registry.EavConfig.get_attributes">
+<em class="property">classmethod </em><tt class="descname">get_attributes</tt><big>(</big><big>)</big><a class="headerlink" href="#eav.registry.EavConfig.get_attributes" title="Permalink to this definition">¶</a></dt>
+<dd>By default, all <a title="eav.models.Attribute" class="reference internal" href="#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> object apply to an
+entity, unless you provide a custom EavConfig class overriding this.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="eav.registry.Registry">
+<em class="property">class </em><tt class="descclassname">eav.registry.</tt><tt class="descname">Registry</tt><big>(</big><em>model_cls</em><big>)</big><a class="headerlink" href="#eav.registry.Registry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles registration through the
+<a title="eav.registry.Registry.register" class="reference internal" href="#eav.registry.Registry.register"><tt class="xref docutils literal"><span class="pre">register()</span></tt></a> and <a title="eav.registry.Registry.unregister" class="reference internal" href="#eav.registry.Registry.unregister"><tt class="xref docutils literal"><span class="pre">unregister()</span></tt></a> methods.</p>
+<dl class="staticmethod">
+<dt id="eav.registry.Registry.attach_eav_attr">
+<em class="property">static </em><tt class="descname">attach_eav_attr</tt><big>(</big><em>sender</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#eav.registry.Registry.attach_eav_attr" title="Permalink to this definition">¶</a></dt>
+<dd>Attache EAV Entity toolkit to an instance after init.</dd></dl>
+
+<dl class="staticmethod">
+<dt id="eav.registry.Registry.register">
+<em class="property">static </em><tt class="descname">register</tt><big>(</big><em>model_cls</em>, <em>config_cls=None</em><big>)</big><a class="headerlink" href="#eav.registry.Registry.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers <em>model_cls</em> with eav. You can pass an optional <em>config_cls</em>
+to override the EavConfig defaults.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Multiple registrations for the same entity are harmlessly ignored.</p>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="eav.registry.Registry.unregister">
+<em class="property">static </em><tt class="descname">unregister</tt><big>(</big><em>model_cls</em><big>)</big><a class="headerlink" href="#eav.registry.Registry.unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregisters <em>model_cls</em> with eav.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unregistering a class not already registered is harmlessly ignored.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Docstrings</a><ul>
+<li><a class="reference external" href="#models">models</a><ul>
+<li><a class="reference external" href="#classes">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#validators">validators</a><ul>
+<li><a class="reference external" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#fields">fields</a><ul>
+<li><a class="reference external" href="#id1">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#forms">forms</a><ul>
+<li><a class="reference external" href="#id2">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#managers">managers</a><ul>
+<li><a class="reference external" href="#functions-and-classes">Functions and Classes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#registry">registry</a><ul>
+<li><a class="reference external" href="#id3">Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">django-eav</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="sources/docstrings.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="django-eav"
+             >previous</a> |</li>
+        <li><a href="index.html">django-eav v0.9.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, MVP Africa.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

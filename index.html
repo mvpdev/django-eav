@@ -1,1 +1,372 @@
-My GitHub Page
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django-eav &mdash; django-eav v0.9.1 documentation</title>
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.9.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="django-eav v0.9.1 documentation" href="#" />
+    <link rel="next" title="Docstrings" href="docstrings.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="docstrings.html" title="Docstrings"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">django-eav v0.9.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="django-eav">
+<h1>django-eav<a class="headerlink" href="#django-eav" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>django-eav provides an Entity-Attribute-Value storage model for django apps.</p>
+<p>For a decent explanation of what an Entity-Attribute-Value storage model is,
+check <a class="reference external" href="http://http://en.wikipedia.org/wiki/Entity-attribute-value_model">Wikipedia</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This software was inspired / derrived from the excellent <a class="reference external" href="http://pypi.python.org/pypi/eav-django/1.0.2">eav-django</a> written by Andrey
+Mikhaylenko.</p>
+<p>There are a few notable differences between this implimentation and the
+eav-django implementation.</p>
+<ul class="last simple">
+<li>This one is called django-eav, whereas the other is called eav-django.</li>
+<li>This app allows you to to &#8216;attach&#8217; EAV attributes to any existing django
+model (even from third-party apps) without making any changes to the those
+models&#8217; code.</li>
+<li>This app has slightly more robust (but still not perfect) filtering.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Until it is properly packaged, you&#8217;ll just need to copy the eav directory
+alongside your other django apps in your project directory.  Then simply add
+<tt class="docutils literal"><span class="pre">eav</span></tt> to your INSTALLED_APPS, then run <tt class="docutils literal"><span class="pre">syncdb</span></tt> to create the tables.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>In order to attach EAV attributes to a model, you first need to register it
+(just like you may register your models with django.contrib.admin).</p>
+<div class="section" id="registration">
+<h3>Registration<a class="headerlink" href="#registration" title="Permalink to this headline">¶</a></h3>
+<p>Registering a model with eav does a few things:</p>
+<ul class="simple">
+<li>Adds the eav <a title="eav.managers.EntityManager" class="reference external" href="docstrings.html#eav.managers.EntityManager"><tt class="xref docutils literal"><span class="pre">eav.managers.EntityManager</span></tt></a> to your class.  By default,
+it will replace the default <tt class="docutils literal"><span class="pre">objects</span></tt> manager of the model, but you can
+choose to have the eav manager named something else if you don&#8217;t want it to
+replace <tt class="docutils literal"><span class="pre">objects</span></tt> (see <a class="reference internal" href="#advancedregistration"><em>Advanced Registration</em></a>).</li>
+<li>Connects the model&#8217;s <tt class="docutils literal"><span class="pre">post_init</span></tt> signal to
+<a title="eav.registry.Registry.attach_eav_attr" class="reference external" href="docstrings.html#eav.registry.Registry.attach_eav_attr"><tt class="xref docutils literal"><span class="pre">attach_eav_attr()</span></tt></a>. This function will attach
+the eav <a title="eav.models.Entity" class="reference external" href="docstrings.html#eav.models.Entity"><tt class="xref docutils literal"><span class="pre">eav.models.Entity</span></tt></a> helper class to every instance of your
+model when it is instatiated.  By default, it will be attached to your models
+as an attribute named <tt class="docutils literal"><span class="pre">eav</span></tt>, which will allow you to access it through
+<tt class="docutils literal"><span class="pre">my_model_instance.eav</span></tt>, but you can choose to name it something else if you
+want (again see <a class="reference internal" href="#advancedregistration"><em>Advanced Registration</em></a>).</li>
+<li>Connect&#8217;s the model&#8217;s <tt class="docutils literal"><span class="pre">pre_save</span></tt> signal to
+<a title="eav.models.Entity.pre_save_handler" class="reference external" href="docstrings.html#eav.models.Entity.pre_save_handler"><tt class="xref docutils literal"><span class="pre">eav.models.Entity.pre_save_handler()</span></tt></a>.</li>
+<li>Connect&#8217;s the model&#8217;s <tt class="docutils literal"><span class="pre">post_save</span></tt> signal to
+<a title="eav.models.Entity.post_save_handler" class="reference external" href="docstrings.html#eav.models.Entity.post_save_handler"><tt class="xref docutils literal"><span class="pre">eav.models.Entity.post_save_handler()</span></tt></a>.</li>
+<li>Adds a generic relation helper to the class.</li>
+<li>Sets an attribute called <tt class="docutils literal"><span class="pre">_eav_config_cls</span></tt> on the model class to either
+the default <a title="eav.registry.EavConfig" class="reference external" href="docstrings.html#eav.registry.EavConfig"><tt class="xref docutils literal"><span class="pre">eav.registry.EavConfig</span></tt></a> config class, or to the config
+class you provided during registration.</li>
+</ul>
+<p>If that all sounds too complicated, don&#8217;t worry, you really don&#8217;t need to think
+about it.  Just thought you should know.</p>
+<div class="section" id="simple-registration">
+<h4>Simple Registration<a class="headerlink" href="#simple-registration" title="Permalink to this headline">¶</a></h4>
+<p>To register any model with EAV, you simply need to add the registration line
+somewhere that will be executed when django starts:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">eav</span>
+<span class="n">eav</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Generally, the most appropriate place for this would be in your <tt class="docutils literal"><span class="pre">models.py</span></tt>
+immediately after your model definition.</p>
+</div>
+<div class="section" id="advanced-registration">
+<span id="advancedregistration"></span><h4>Advanced Registration<a class="headerlink" href="#advanced-registration" title="Permalink to this headline">¶</a></h4>
+<p>Advanced registration is only required if:</p>
+<ul class="simple">
+<li>You don&#8217;t want eav to replace your model&#8217;s default <tt class="docutils literal"><span class="pre">objects</span></tt> manager.</li>
+<li>You want to name the <a title="eav.models.Entity" class="reference external" href="docstrings.html#eav.models.Entity"><tt class="xref docutils literal"><span class="pre">Entity</span></tt></a> helper attribute something
+other than <tt class="docutils literal"><span class="pre">eav</span></tt></li>
+<li>You don&#8217;t want all eav <a title="eav.models.Attribute" class="reference external" href="docstrings.html#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> objects to
+be able to be set for all of your registered models. In other words, you
+have different types of entities, each with different attributes.</li>
+</ul>
+<p>Advanced registration is simple, and is performed the exact same way
+you override the django.contrib.admin registration defaults.</p>
+<p>You just need to define your own config class that subclasses
+<a title="eav.registry.EavConfig" class="reference external" href="docstrings.html#eav.registry.EavConfig"><tt class="xref docutils literal"><span class="pre">EavConfig</span></tt></a> and override the default class attributes
+and method.</p>
+<p>There are five <a title="eav.registry.EavConfig" class="reference external" href="docstrings.html#eav.registry.EavConfig"><tt class="xref docutils literal"><span class="pre">EavConfig</span></tt></a> class attributes you can
+override:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="24%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Class Attribute</th>
+<th class="head">Default</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">manager_attr</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">'objects'</span></tt></td>
+<td>The name of the eav manager</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">manager_only</span></tt></td>
+<td><tt class="xref docutils literal"><span class="pre">False</span></tt></td>
+<td><em>boolean</em> Whether to <em>only</em> replace the manager, and do nothing else</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">eav_attr</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">'eav'</span></tt></td>
+<td>The attribute name of the entity helper</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">generic_relation_attr</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">'eav_values'</span></tt></td>
+<td>The attribute name of the generic relation helper</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">generic_relation_related_name</span></tt></td>
+<td>The model&#8217;s <tt class="docutils literal"><span class="pre">__class__.__name__</span></tt></td>
+<td>The related name of the related name of the generic relation to your model</td>
+</tr>
+</tbody>
+</table>
+<p>An example of just choosing a different name for the manager (and thus leaving
+<tt class="docutils literal"><span class="pre">objects</span></tt> intact):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyEavConfigClass</span><span class="p">(</span><span class="n">EavConfig</span><span class="p">):</span>
+    <span class="n">manager_attr</span> <span class="o">=</span> <span class="s">&#39;eav_objects&#39;</span>
+
+<span class="n">eav</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">MyEavConfigClass</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Additionally, <a title="eav.registry.EavConfig" class="reference external" href="docstrings.html#eav.registry.EavConfig"><tt class="xref docutils literal"><span class="pre">EavConfig</span></tt></a> defines a classmethod called
+<tt class="docutils literal"><span class="pre">get_attributes</span></tt> that, by default will return <tt class="docutils literal"><span class="pre">Attribute.objects.all()</span></tt>
+This method is used to determine which <a title="eav.models.Attribute" class="reference external" href="docstrings.html#eav.models.Attribute"><tt class="xref docutils literal"><span class="pre">Attribute</span></tt></a> can be
+applied to the entity model you are registering. If you want to limit which
+attributes can be applied to your entity, you would need to override it.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyEavConfigClass</span><span class="p">(</span><span class="n">EavConfig</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;person&#39;</span><span class="p">)</span>
+
+<span class="n">eav</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">MyEavConfigClass</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="using-attributes">
+<h2>Using Attributes<a class="headerlink" href="#using-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Once you&#8217;ve registered your model(s), you can begin to use them with EAV
+attributes. Let&#8217;s assume your model is called <tt class="docutils literal"><span class="pre">Person</span></tt> and it has one
+normal django <tt class="docutils literal"><span class="pre">CharField</span></tt> called name, but you want to be able to dynamically
+store other data about each Person.</p>
+<p>First, let&#8217;s create some attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Weight&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_FLOAT</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Height&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_INT</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Attribute</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Is pregant?&#39;</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">Attribute</span><span class="o">.</span><span class="n">TYPE_BOOLEAN</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now let&#8217;s create a patient, and set some of these attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">eav</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">46</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">eav</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="mf">42.2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">eav</span><span class="o">.</span><span class="n">is_pregnant</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">eav</span><span class="o">.</span><span class="n">height</span>
+<span class="go">46</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">eav</span><span class="o">.</span><span class="n">weight</span>
+<span class="go">42.2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">is_pregnant</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>Additionally, assuming we&#8217;re using the eav manager, we can also do:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Jen&#39;</span><span class="p">,</span> <span class="n">eav__height</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">eav__pregnant</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="filtering">
+<h2>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h2>
+<p>eav attributes are filterable, using the same __ notation as django foreign
+keys:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">eav__weight</span><span class="o">=</span><span class="mf">42.2</span><span class="p">)</span>
+<span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">eav__weight__gt</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span> <span class="n">eav__weight__gt</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">eav__is_pregnant</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can even use Q objects, however there are some known issues
+(see <a class="reference internal" href="#qobjectissue"><em>Q Object Filters</em></a>) with Q object filters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Bob&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">eav__is_pregnant</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>What about if you have a foreign key to a model that uses eav, but you want
+to filter from a model that doesn&#8217;t use eav?  For example, let&#8217;s say you have
+a <tt class="docutils literal"><span class="pre">Patient</span></tt> model that <strong>doesn&#8217;t</strong> use eav, but it has a foreign key to
+<tt class="docutils literal"><span class="pre">Encounter</span></tt> that <strong>does</strong> use eav. You can even filter through eav accross
+this relationship, but you need to use the eav manager for <tt class="docutils literal"><span class="pre">Patient</span></tt>.</p>
+<p>Just register <tt class="docutils literal"><span class="pre">Patient</span></tt> with eav, but set <tt class="docutils literal"><span class="pre">manager_only</span> <span class="pre">=</span> <span class="pre">True</span></tt>
+see (see <a class="reference internal" href="#advancedregistration"><em>Advanced Registration</em></a>).  Then you can do:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Patient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">encounter__eav__weight</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="admin-integration">
+<h2>Admin Integration<a class="headerlink" href="#admin-integration" title="Permalink to this headline">¶</a></h2>
+<p>You can even have your eav attributes show up just like normal fields in your
+models admin pages.  Just register using the eav admin class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">eav.forms</span> <span class="kn">import</span> <span class="n">BaseDynamicEntityForm</span>
+<span class="kn">from</span> <span class="nn">eav.admin</span> <span class="kn">import</span> <span class="n">BaseEntityAdmin</span>
+
+<span class="k">class</span> <span class="nc">PatientAdminForm</span><span class="p">(</span><span class="n">BaseDynamicEntityForm</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Patient</span>
+
+<span class="k">class</span> <span class="nc">PatientAdmin</span><span class="p">(</span><span class="n">BaseEntityAdmin</span><span class="p">):</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">PatientAdminForm</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">PatientAdmin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="known-issues">
+<h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="q-object-filters">
+<span id="qobjectissue"></span><h3>Q Object Filters<a class="headerlink" href="#q-object-filters" title="Permalink to this headline">¶</a></h3>
+<p>Due to an unexplained Q object / generic relation issue, exclude filters with
+EAV Q objects, or EAV Q objects ANDed together may produce innacurate results.</p>
+</div>
+</div>
+<div class="section" id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="docstrings.html">Docstrings</a><ul>
+<li class="toctree-l2"><a class="reference external" href="docstrings.html#models">models</a></li>
+<li class="toctree-l2"><a class="reference external" href="docstrings.html#validators">validators</a></li>
+<li class="toctree-l2"><a class="reference external" href="docstrings.html#fields">fields</a></li>
+<li class="toctree-l2"><a class="reference external" href="docstrings.html#forms">forms</a></li>
+<li class="toctree-l2"><a class="reference external" href="docstrings.html#managers">managers</a></li>
+<li class="toctree-l2"><a class="reference external" href="docstrings.html#registry">registry</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="#">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">django-eav</a><ul>
+<li><a class="reference external" href="#introduction">Introduction</a></li>
+<li><a class="reference external" href="#installation">Installation</a></li>
+<li><a class="reference external" href="#usage">Usage</a><ul>
+<li><a class="reference external" href="#registration">Registration</a><ul>
+<li><a class="reference external" href="#simple-registration">Simple Registration</a></li>
+<li><a class="reference external" href="#advanced-registration">Advanced Registration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#using-attributes">Using Attributes</a></li>
+<li><a class="reference external" href="#filtering">Filtering</a></li>
+<li><a class="reference external" href="#admin-integration">Admin Integration</a></li>
+<li><a class="reference external" href="#known-issues">Known Issues</a><ul>
+<li><a class="reference external" href="#q-object-filters">Q Object Filters</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#additional-resources">Additional Resources</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="docstrings.html"
+                                  title="next chapter">Docstrings</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="docstrings.html" title="Docstrings"
+             >next</a> |</li>
+        <li><a href="#">django-eav v0.9.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, MVP Africa.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

@@ -53,9 +53,9 @@
 check <a class="reference external" href="http://en.wikipedia.org/wiki/Entity-attribute-value_model">Wikipedia</a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>This software was inspired / derrived from the excellent <a class="reference external" href="http://pypi.python.org/pypi/eav-django/1.0.2">eav-django</a> written by Andrey
+<p>This software was inspired / derived from the excellent <a class="reference external" href="http://pypi.python.org/pypi/eav-django/1.0.2">eav-django</a> written by Andrey
 Mikhaylenko.</p>
-<p>There are a few notable differences between this implimentation and the
+<p>There are a few notable differences between this implementation and the
 eav-django implementation.</p>
 <ul class="last simple">
 <li>This one is called django-eav, whereas the other is called eav-django.</li>
@@ -243,7 +243,7 @@ keys:</p>
 <p>What about if you have a foreign key to a model that uses eav, but you want
 to filter from a model that doesn&#8217;t use eav?  For example, let&#8217;s say you have
 a <tt class="docutils literal"><span class="pre">Patient</span></tt> model that <strong>doesn&#8217;t</strong> use eav, but it has a foreign key to
-<tt class="docutils literal"><span class="pre">Encounter</span></tt> that <strong>does</strong> use eav. You can even filter through eav accross
+<tt class="docutils literal"><span class="pre">Encounter</span></tt> that <strong>does</strong> use eav. You can even filter through eav across
 this relationship, but you need to use the eav manager for <tt class="docutils literal"><span class="pre">Patient</span></tt>.</p>
 <p>Just register <tt class="docutils literal"><span class="pre">Patient</span></tt> with eav, but set <tt class="docutils literal"><span class="pre">manager_only</span> <span class="pre">=</span> <span class="pre">True</span></tt>
 see (see <a class="reference internal" href="#advancedregistration"><em>Advanced Registration</em></a>).  Then you can do:</p>
@@ -274,7 +274,7 @@ models admin pages.  Just register using the eav admin class:</p>
 <div class="section" id="q-object-filters">
 <span id="qobjectissue"></span><h3>Q Object Filters<a class="headerlink" href="#q-object-filters" title="Permalink to this headline">¶</a></h3>
 <p>Due to an unexplained Q object / generic relation issue, exclude filters with
-EAV Q objects, or EAV Q objects ANDed together may produce innacurate results.</p>
+EAV Q objects, or EAV Q objects ANDed together may produce inaccurate results.</p>
 </div>
 </div>
 <div class="section" id="additional-resources">

@@ -102,8 +102,12 @@ def validate_enum(value):
     Raises ``ValidationError`` unless *value* is a saved
     :class:`~eav.models.EnumValue` model instance.
     '''
+    pass
+    """
+    # This never passes, value is a str
     from .models import EnumValue
     if not isinstance(value, EnumValue):
         raise ValidationError(_(u"Must be an EnumValue model object instance"))
     if not value.pk:
         raise ValidationError(_(u"EnumValue has not been saved yet"))
+    """

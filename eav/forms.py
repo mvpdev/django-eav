@@ -94,7 +94,7 @@ class BaseDynamicEntityForm(ModelForm):
             self.fields[attribute.slug] = MappedField(**defaults)
 
             # fill initial data (if attribute was already defined)
-            if value and not datatype == attribute.TYPE_ENUM: #enum done above
+            if not value is None and not datatype == attribute.TYPE_ENUM: #enum done above
                 self.initial[attribute.slug] = value
 
     def save(self, commit=True):

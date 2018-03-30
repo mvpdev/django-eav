@@ -1,3 +1,4 @@
+from builtins import str
 from django.test import TestCase
 
 from ..models import EnumGroup, Attribute, Value
@@ -11,7 +12,7 @@ class MiscModels(TestCase):
     def test_enumgroup_unicode(self):
         name = 'Yes / No'
         e = EnumGroup.objects.create(name=name)
-        self.assertEqual(unicode(e), name)
+        self.assertEqual(str(e), name)
 
     def test_attribute_help_text(self):
         desc = 'Patient Age'

@@ -1,8 +1,9 @@
+from builtins import object
 from django.db import models
 from ..decorators import register_eav
 
 class Patient(models.Model):
-    class Meta:
+    class Meta(object):
         app_label = 'eav'
 
     name = models.CharField(max_length=12)
@@ -11,7 +12,7 @@ class Patient(models.Model):
         return self.name
 
 class Encounter(models.Model):
-    class Meta:
+    class Meta(object):
         app_label = 'eav'
 
     num = models.PositiveSmallIntegerField()
@@ -22,7 +23,7 @@ class Encounter(models.Model):
 
 @register_eav()
 class ExampleModel(models.Model):
-    class Meta:
+    class Meta(object):
         app_label = 'eav'
 
     name = models.CharField(max_length=12)

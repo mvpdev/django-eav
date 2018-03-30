@@ -26,6 +26,7 @@ This contains the registry classes
 Classes
 -------
 '''
+from builtins import object
 
 from django.db.utils import DatabaseError
 from django.db.models.signals import pre_init, post_init, pre_save, post_save

@@ -32,6 +32,7 @@ Along with the :class:`Entity` helper class.
 Classes
 -------
 '''
+from builtins import object
 
 
 from django.utils import timezone
@@ -151,7 +152,7 @@ class Attribute(models.Model):
                  change it's datatype.
     '''
 
-    class Meta:
+    class Meta(object):
         ordering = ['content_type', 'name']
         unique_together = ('site', 'content_type', 'slug')
 

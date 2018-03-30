@@ -41,7 +41,7 @@ class BaseEntityAdmin(ModelAdmin):
         form = context['adminform'].form
 
         # infer correct data from the form
-        fieldsets = self.fieldsets or [(None, {'fields': form.fields.keys()})]
+        fieldsets = self.fieldsets or [(None, {'fields': list(form.fields.keys())})]
         adminform = admin.helpers.AdminForm(form, fieldsets,
                                       self.prepopulated_fields)
         media = mark_safe(self.media + adminform.media)
@@ -91,7 +91,7 @@ class BaseEntityInline(InlineModelAdmin):
         instance = self.model(**kw)
         form = formset.form(request.POST, instance=instance)
 
-        return [(None, {'fields': form.fields.keys()})]
+        return [(None, {'fields': list(form.fields.keys())})]
 
 class AttributeAdmin(ModelAdmin):
     list_display = ('name', 'content_type', 'slug', 'datatype', 'description', 'site')

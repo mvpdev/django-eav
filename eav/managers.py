@@ -25,6 +25,8 @@ Contains the custom manager used by entities registered with eav.
 Functions and Classes
 ---------------------
 '''
+import six
+
 from functools import wraps
 
 from django.db import models
@@ -49,7 +51,7 @@ def eav_filter(func):
             new_args.append(arg)
 
         new_kwargs = {}
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             # modify kwargs (warning: recursion ahead)
             new_key, new_value = expand_eav_filter(self.model, key, value)
             new_kwargs.update({new_key: new_value})
@@ -166,7 +168,7 @@ class EntityManager(models.Manager):
 
         new_kwargs = {}
         eav_kwargs = {}
-        for key, value in kwargs.iteritems():
+        for key, value in six.iteritems(kwargs):
             if key.startswith(prefix):
                 eav_kwargs.update({key[len(prefix):]: value})
             else:
@@ -174,7 +176,7 @@ class EntityManager(models.Manager):
 
         obj = self.model(**new_kwargs)
         obj_eav = getattr(obj, config_cls.eav_attr)
-        for key, value in eav_kwargs.iteritems():
+        for key, value in six.iteritems(eav_kwargs):
             setattr(obj_eav, key, value)
         obj.save()
         return obj
